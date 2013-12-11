@@ -27,6 +27,11 @@ for r in rounds:
         old = key
         new = renamed_vars[key]
         dict[new] = dict.pop(old) # rename key old to new
+    for key in {'age', 'hours_a_day_you_spend_behind_a_computer'}:
+        try:
+            dict[key] = int(dict[key])
+        except ValueError:
+            dict.pop(key, None)
     table.append(dict)
 
 question_keys = sorted(table[0].keys())[0:38] # very ugly way to select just the questions; we want those last in the keys list
