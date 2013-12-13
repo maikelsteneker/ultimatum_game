@@ -8,13 +8,14 @@ from game.models import *
 import csv
 
 filename = 'output.csv' # the output file
+blacklist = ['4b058c485b5911e397370050562b0074', 'a541dbe45b5911e397370050562b0074', '569120c25de311e397370050562b0074', '9aa2453a635511e397370050562b0074'] # blacklisted mturk keys that should not be exported
 renamed_vars = {'id': 'round', 'time_elapsed': 'round_time',} # renamed variables
 # An entry x:y in this dictionary will rename the key (column) x to y.
 # We rename id to round, since it's not clear what the id refers to.
 # We rename time_elapsed for similar reasons; it's not clear that this refers to the time of a single round.
 
 table = []
-rounds = (r for r in Round.objects.all() if r.player.mturk_key != '0') # all the players that finished the questionnaire
+rounds = (r for r in Round.objects.all() if r.player.mturk_key != '0' and r.player.mturk_key not in blacklist) # all the players that finished the questionnaire
 player_round = {p: 0 for p in Player.objects.all()}
 #TODO: filter for additional criteria
 for r in rounds:
