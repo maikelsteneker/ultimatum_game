@@ -41,7 +41,7 @@ for r in rounds:
     table.append(dict)
 
 question_keys = sorted(table[0].keys())[0:38] # very ugly way to select just the questions; we want those last in the keys list
-keys = ['player', 'round', 'opponent', 'opponent_kind', 'accepted', 'amount_offered', 'is_intentional', 'start_time', 'instructions_time', 'round_time', 'questionnaire_time', 'age', 'hours_a_day_you_spend_behind_a_computer', 'nationality',] # the keys, in order, that will be used in the csv file
+keys = ['player', 'round_number', 'opponent', 'opponent_kind', 'accepted', 'amount_offered', 'is_intentional', 'start_time', 'instructions_time', 'round_time', 'questionnaire_time', 'age', 'hours_a_day_you_spend_behind_a_computer', 'nationality',] # the keys, in order, that will be used in the csv file
 keys.extend(question_keys)
 # Export dictionary to csv.
 f = open(filename, 'wb')
