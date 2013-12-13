@@ -9,8 +9,10 @@ import csv
 import operator
 
 filename = 'output.csv' # the output file
-blacklist = {'4b058c485b5911e397370050562b0074', 'a541dbe45b5911e397370050562b0074', '569120c25de311e397370050562b0074', '9aa2453a635511e397370050562b0074'} # blacklisted mturk keys that should not be exported
-renamed_vars = {'id': 'round', 'time_elapsed': 'round_time',} # renamed variables
+blacklist = {'4b058c485b5911e397370050562b0074', 'a541dbe45b5911e397370050562b0074', '569120c25de311e397370050562b0074', '9aa2453a635511e397370050562b0074',} # blacklisted mturk keys that should not be exported
+int_vars = {'age', 'hours_a_day_you_spend_behind_a_computer',} # variables to treat as integer
+renamed_vars = {#'id': 'round',
+                'time_elapsed': 'round_time',} # renamed variables
 # An entry x:y in this dictionary will rename the key (column) x to y.
 # We rename id to round, since it's not clear what the id refers to.
 # We rename time_elapsed for similar reasons; it's not clear that this refers to the time of a single round.
@@ -22,16 +24,16 @@ player_round = {p: 0 for p in Player.objects.all()} # dictionary that looks at h
 
 for r in rounds:
     dict = model_to_dict(r) # form a dictionary from the information in the round object
-    r_id = dict['id'] # temporarily store the round id in case an update replaces it
+    #r_id = dict['id'] # temporarily store the round id in case an update replaces it
     dict.update(model_to_dict(r.player)) # add information from the player to the dict
-    dict['id'] = r_id # restore the round id value
+    #dict['id'] = r_id # restore the round id value
     for q in Question.objects.all():
         dict[q.text] = Answer.objects.get(question=q, player=r.player).option.text # use the question text as a key and the chosen option text as a value
     for key in renamed_vars:
         old = key
         new = renamed_vars[key]
         dict[new] = dict.pop(old) # rename key old to new
-    for key in {'age', 'hours_a_day_you_spend_behind_a_computer'}:
+    for key in int_vars:
         try:
             dict[key] = int(dict[key])
         except ValueError:
