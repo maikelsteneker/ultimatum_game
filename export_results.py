@@ -6,9 +6,10 @@ setup_environ(settings)
 
 from game.models import *
 import csv
+import operator
 
 filename = 'output.csv' # the output file
-blacklist = ['4b058c485b5911e397370050562b0074', 'a541dbe45b5911e397370050562b0074', '569120c25de311e397370050562b0074', '9aa2453a635511e397370050562b0074'] # blacklisted mturk keys that should not be exported
+blacklist = {'4b058c485b5911e397370050562b0074', 'a541dbe45b5911e397370050562b0074', '569120c25de311e397370050562b0074', '9aa2453a635511e397370050562b0074'} # blacklisted mturk keys that should not be exported
 renamed_vars = {'id': 'round', 'time_elapsed': 'round_time',} # renamed variables
 # An entry x:y in this dictionary will rename the key (column) x to y.
 # We rename id to round, since it's not clear what the id refers to.
@@ -16,8 +17,9 @@ renamed_vars = {'id': 'round', 'time_elapsed': 'round_time',} # renamed variable
 
 table = []
 rounds = (r for r in Round.objects.all() if r.player.mturk_key != '0' and r.player.mturk_key not in blacklist) # all the players that finished the questionnaire
-player_round = {p: 0 for p in Player.objects.all()}
-#TODO: filter for additional criteria
+rounds = sorted(rounds, key=operator.attrgetter('datetime')) # sort by datetime
+player_round = {p: 0 for p in Player.objects.all()} # dictionary that looks at how many rounds we already saw so far for each player
+
 for r in rounds:
     dict = model_to_dict(r) # form a dictionary from the information in the round object
     r_id = dict['id'] # temporarily store the round id in case an update replaces it
