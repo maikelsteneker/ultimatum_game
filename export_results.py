@@ -15,6 +15,7 @@ renamed_vars = {'id': 'round', 'time_elapsed': 'round_time',} # renamed variable
 
 table = []
 rounds = (r for r in Round.objects.all() if r.player.mturk_key != '0') # all the players that finished the questionnaire
+player_round = {p: 0 for p in Player.objects.all()}
 #TODO: filter for additional criteria
 for r in rounds:
     dict = model_to_dict(r) # form a dictionary from the information in the round object
@@ -32,6 +33,8 @@ for r in rounds:
             dict[key] = int(dict[key])
         except ValueError:
             dict.pop(key, None)
+    player_round[r.player] += 1
+    dict['round_number'] = player_round[r.player]
     table.append(dict)
 
 question_keys = sorted(table[0].keys())[0:38] # very ugly way to select just the questions; we want those last in the keys list
